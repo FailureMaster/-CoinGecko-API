@@ -7,6 +7,7 @@
     <title>Home - Brand</title>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&amp;display=swap">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -14,9 +15,15 @@
         <div class="container"><a class="navbar-brand d-flex align-items-center" href="/"><span>Failure Master</span></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a class="nav-link active" href="index.html">Cryptocurrency</a></li>
-                    <li class="nav-item"><a class="nav-link" href="features.html">Finance</a></li>
-                    <li class="nav-item"><a class="nav-link" href="integrations.html">Exchanges</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/crypto" id="crypto">Cryptocurrency</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/finance" id="finance">Finance</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/exchanges" id="exchange">Exchanges</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -28,15 +35,15 @@
                 <div class="row g-0">
                     <div class="col-md-6 col-xl-8 d-flex flex-column justify-content-center">
                         <div class="text-white p-4 p-md-5">
-                            <ul>
+                            <ul id="listContainer">
                                 <li>Binance</li>
                                 <li>Okex</li>
                                 <li>Coinbase</li>
                             </ul>
                             <div class="my-3" style="width: 409.656px;">
-                                <a class="btn btn-secondary me-2 mt-2" role="button" href="#">Previous 10</a>
-                                <a class="btn btn-light me-2 mt-2" role="button" href="#">List Top 100</a>
-                                <a class="btn btn-secondary me-2 mt-2" role="button" href="#">Next 10</a>
+                                <a class="btn btn-secondary me-2 mt-2" role="button" href="#" id="prev">Previous 10</a>
+                                <a class="btn btn-light me-2 mt-2" role="button" href="#" id="top100">List Top 100</a>
+                                <a class="btn btn-secondary me-2 mt-2" role="button" href="#" id="next">Next 10</a>
                             </div>
                         </div>
                     </div>
@@ -96,8 +103,98 @@
             </div>
         </div>
     </footer>
+    
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="js/startup-modern.js"></script>
+    <script>
+        $(() => {
+            let page = 1;
+            let currentSelection = '';
+
+           $('#crypto').click((e) => {
+                currentSelection = 'crypto';
+                e.preventDefault();
+                $.get(`/${currentSelection}`, (data) => {
+                    let coinsList = '';
+                    data.forEach(coins => {
+                        coinsList += `<li>${coins}</li>`;
+                    });
+                    $('#listContainer').html(coinsList);
+                });
+                page = 1;
+                $('#prev').removeAttr('href').removeClass('disabled');
+                 $('#next').removeAttr('href').removeClass('disabled');
+           })
+
+            $('#next').click((e) => {
+                page+=1;
+                e.preventDefault();
+                $.get(`/${currentSelection}/${page}`, (data) => {
+                    let coinsList = '';
+                    data.forEach(coins => {
+                        coinsList += `<li>${coins}</li>`;
+                    });
+                    $('#listContainer').html(coinsList);
+                });
+            });///next closing
+
+            $('#prev').click((e) => {
+                page-=1;
+                e.preventDefault();
+                $.get(`/${currentSelection}/${page}`, (data) => {
+                    let coinsList = '';
+                    data.forEach(coins => {
+                        coinsList += `<li>${coins}</li>`;
+                    });
+                    $('#listContainer').html(coinsList);
+                });
+            });///prev closing
+
+
+            $('#top100').click((e) => {
+                e.preventDefault();
+                // console.log(`/${currentSelection}hundred`);
+                $.get(`/${currentSelection}hundred`, (data) => {
+                    let coinsList = '';
+                    data.forEach(coins => {
+                        coinsList += `<li>${coins}</li>`;
+                    });
+                    $('#listContainer').html(coinsList);
+                });
+                 $('#prev').removeAttr('href').addClass('disabled');
+                 $('#next').removeAttr('href').addClass('disabled');
+            })
+
+            $('#exchange').click((e) => {
+                page = 1;
+                e.preventDefault();
+                currentSelection = 'exchanges';
+                $.get(`/${currentSelection}`, (exchanges) => {
+                    let coinsList = '';
+                    exchanges.forEach(coins => {
+                        coinsList += `<li>${coins}</li>`;
+                    });
+                    $('#listContainer').html(coinsList);
+                })
+
+            })
+
+            $('#finance').click((e) => {
+                page = 1;
+                e.preventDefault();
+                currentSelection = 'finance';
+                $.get(`/${currentSelection}`, (exchanges) => {
+                    let coinsList = '';
+                    exchanges.forEach(coins => {
+                        coinsList += `<li>${coins}</li>`;
+                    });
+                    $('#listContainer').html(coinsList);
+                })
+
+            })
+
+        })
+    </script>
 </body>
 
 </html>
