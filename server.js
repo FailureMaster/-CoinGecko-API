@@ -26,15 +26,17 @@ app.get('/',  (req, res) => {
     res.render('index');
 }).listen(9090);
 
-
+// ====== CRYPTO ROUTE ====== 
 app.get('/crypto', (req, res) => {
     axios.get('https://api.coingecko.com/api/v3/coins/list?include_platform=false').then(coins => {
         let responseData = [];
         coins.data.forEach((element, index) => {
+            //get first 10 element of the array and push it to the responseData
             if (index < 10) {
                 responseData.push(element.name);
             }
         });
+        // return it by using res = response
         res.json(responseData);
     });
 });//crypto route closing
@@ -53,7 +55,7 @@ app.get('/crypto/:id', (req, res) => {
         });
         res.json(responseData);
     });
-});//crypto route closing
+});//previus and next route
 
 
 app.get('/cryptohundred', (req, res) => {
@@ -67,9 +69,10 @@ app.get('/cryptohundred', (req, res) => {
 
         res.json(responseData);
     });
-});//crypto route closing
+});//show hundred route
 
 
+// ====== EXCHANGES ROUTE ====== 
 app.get('/exchanges', (req, res) => {
     axios.get(`https://api.coingecko.com/api/v3/exchanges?per_page=10&page=1`).then(exchange => {
         let responseData = [];
@@ -79,6 +82,7 @@ app.get('/exchanges', (req, res) => {
         res.json(responseData);
     });
 });
+
 
 app.get('/exchanges/:page', (req, res) => {
     let page = req.params.page
@@ -91,6 +95,7 @@ app.get('/exchanges/:page', (req, res) => {
     });
 });
 
+
 app.get('/exchangeshundred/', (req, res) => {
     axios.get(`https://api.coingecko.com/api/v3/exchanges?per_page=100`).then(exchange => {
         let responseData = [];
@@ -101,7 +106,7 @@ app.get('/exchangeshundred/', (req, res) => {
     });
 });
 
-
+// ====== FINANCE ROUTE ====== 
 app.get('/finance/', (req, res) => {
     axios.get(`https://api.coingecko.com/api/v3/asset_platforms`).then(finance => {
         let responseData = [];
@@ -113,6 +118,7 @@ app.get('/finance/', (req, res) => {
         res.json(responseData);
     });
 });
+
 
 app.get('/finance/:page', (req, res) => {
     axios.get(`https://api.coingecko.com/api/v3/asset_platforms`).then(finance => {
